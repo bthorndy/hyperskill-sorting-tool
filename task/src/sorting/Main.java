@@ -5,27 +5,31 @@ import java.util.*;
 public class Main {
     public static void main(final String[] args) {
         Scanner scanner = new Scanner(System.in);
-        long maxNum = Long.MIN_VALUE;
-        int totalNumbers = 0;
-        HashMap<Long, Integer> counts = new HashMap<>();
+        String dataType = "word";
 
-        while (scanner.hasNextLong()) {
-            long number = scanner.nextLong();
-            totalNumbers++;
+        //Process command-line arguments
+        for (int i = 0; i < args.length; i++) {
 
-            //Only need to keep track of max count, so stop if this num isn't current max.
-            if (number >= maxNum) {
-                maxNum = number;
+            if ("-datatype".equals(args[i].toLowerCase())) {
 
-                if (counts.containsKey(number)) {
-                    counts.put(number, counts.get(number) + 1);
+                if (i < args.length - 1) {
+                    dataType = args[i + 1].toLowerCase();
                 } else {
-                    counts.put(number, 1);
+                    System.out.println("No datatype value provided, defaulting to \"word\" datatype.");
                 }
+
+                //Right now we don't have any additional arguments, can stop once we find datatype.
+                break;
             }
         }
 
-        System.out.printf("Total numbers: %d.%n", totalNumbers);
-        System.out.printf("The greatest number: %d (%d times(s)).", maxNum, counts.get(maxNum));
+        switch (dataType) {
+            case "long" -> InputAnalyzer.readLongInput(scanner);
+            case "word" -> InputAnalyzer.readStringInput(scanner, "word");
+            case "line" -> InputAnalyzer.readStringInput(scanner, "line");
+            default -> {
+                System.out.println("Invalid datatype provided, defaulting to \"word\" datatype.");
+            }
+        }
     }
 }

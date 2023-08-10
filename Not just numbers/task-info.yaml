@@ -397,6 +397,12 @@ files:
         return CheckResult(true)
     }
   learner_created: false
+- name: src/sorting/InputAnalyzer.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/45/stages/240/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: "Thu, 10 Aug 2023 00:14:11 UTC"
 record: 2
