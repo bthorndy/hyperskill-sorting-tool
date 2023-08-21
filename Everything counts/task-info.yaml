@@ -365,6 +365,140 @@ files:
 
 
   learner_created: false
-feedback_link: https://hyperskill.org/projects/45/stages/242/implement#comment
-status: Unchecked
-record: -1
+- name: src/sorting/DataType.java
+  visible: true
+  text: |
+    package sorting;
+
+    public enum DataType {
+        WORD,
+        LINE,
+        LONG;
+
+        public String getName() {
+            return this.name().toLowerCase();
+        }
+    }
+  learner_created: true
+- name: src/sorting/StringComparator.java
+  visible: true
+  text: |
+    package sorting;
+
+    import java.util.Comparator;
+
+    public class StringComparator implements Comparator<String> {
+        @Override
+        public int compare(String s1, String s2) {
+            boolean sameLength = s1.length() == s2.length();
+            if (s1.equals(s2)) {
+                return 0;
+            } else if (s1.length() > s2.length() || (sameLength && s1.compareTo(s2) > 0)) {
+                return 1;
+            } else {
+                return -1;
+            }
+        }
+    }
+  learner_created: true
+- name: src/sorting/InputAnalyzer.java
+  visible: true
+  text: |
+    package sorting;
+
+    import java.util.ArrayList;
+    import java.util.HashMap;
+
+    public class InputAnalyzer {
+        public static void analyzeLongInput(ArrayList<Long> userInput) {
+            long maxNum = Long.MIN_VALUE;
+            HashMap<Long, Integer> counts = new HashMap<>();
+
+            for (Long number : userInput) {
+
+                //Only need to keep track of max count, so stop if this num isn't current max.
+                if (number >= maxNum) {
+                    maxNum = number;
+
+                    if (counts.containsKey(number)) {
+                        counts.put(number, counts.get(number) + 1);
+                    } else {
+                        counts.put(number, 1);
+                    }
+                }
+            }
+
+            System.out.printf("Total numbers: %d.%n", userInput.size());
+            System.out.printf("The greatest number: %d (%d times(s)).", maxNum, counts.get(maxNum));
+        }
+
+        public static void analyzeStringInput(ArrayList<String> stringInput, DataType dataType) {
+            String longestString = "";
+            int stringCount = 0;
+            int longestStringCount = 0;
+            StringComparator comparator = new StringComparator();
+
+            for (String currentString : stringInput) {
+                if (currentString.equals(longestString)) {
+                    longestStringCount++;
+                } else if (comparator.compare(currentString, longestString) > 0) {
+                    longestString = currentString;
+                    longestStringCount = 1;
+                }
+                stringCount++;
+            }
+
+            double longestStringPercentage = ((double) longestStringCount / stringCount) * 100;
+            System.out.printf("Total %ss: %d.%n", dataType.getName(), stringCount);
+
+            if (dataType == DataType.LINE) {
+                System.out.printf("""
+                        The longest line:
+                        %s
+                        (%d time(s), %.0f%%).
+                        """, longestString, longestStringCount, longestStringPercentage);
+            } else {
+                System.out.printf("The longest %s: %s (%d times(s), %.0f%%).",
+                        dataType.getName(), longestString, longestStringCount,longestStringPercentage );
+            }
+        }
+
+        public static void sortIntegers(ArrayList<Long> input) {
+            System.out.printf("Total numbers: %d.%n", input.size());
+            System.out.print("Sorted data: ");
+            input.sort(Long::compareTo);
+            input.forEach(num -> System.out.print(num + " "));
+        }
+    }
+  learner_created: true
+feedback_link: https://hyperskill.org/learn/step/5384#comment
+status: Failed
+feedback:
+  message: |-
+    Wrong answer in test #1
+
+    Total sorted tokens (1) are incorrect. Expected: 7.
+    Args:
+    -dataType long -sortingType natural
+    Input:
+    1 -2   333 4
+    42
+    1                 1
+    Your output:
+    Total numbers: 7.
+    The greatest number: 333 (1 times(s)).
+
+    Please find below the output of your program during this failed test.
+    Note that the &#39;&gt;&#39; character indicates the beginning of the input line.
+
+    ---
+
+    Arguments: -dataType long -sortingType natural
+
+    &gt; 1 -2   333 4
+    &gt; 42
+    &gt; 1                 1
+    Total numbers: 7.
+    The greatest number: 333 (1 times(s)).
+  time: "Mon, 21 Aug 2023 01:25:16 UTC"
+record: 4
