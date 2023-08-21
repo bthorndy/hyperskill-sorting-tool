@@ -5,30 +5,48 @@ import java.util.*;
 public class Main {
     public static void main(final String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String dataType = "word";
+        boolean sortIntegers = false;
+        DataType dataType = DataType.WORD; //word is default if none or invalid dataype argument provided
+        ArrayList<Long> longInput = new ArrayList<>();
+        ArrayList<String> stringInput = new ArrayList<>();
 
         //Process command-line arguments
         for (int i = 0; i < args.length; i++) {
 
-            if ("-datatype".equals(args[i].toLowerCase())) {
+            if (args[i].equals("-sortIntegers")) {
+                sortIntegers = true;
+
+            } else if (args[i].equals("-dataType")) {
 
                 if (i < args.length - 1) {
-                    dataType = args[i + 1].toLowerCase();
-                } else {
-                    System.out.println("No datatype value provided, defaulting to \"word\" datatype.");
+                    try {
+                        dataType = DataType.valueOf(args[i + 1].toUpperCase());
+                    } catch (IllegalArgumentException e) {}
                 }
-
-                //Right now we don't have any additional arguments, can stop once we find datatype.
-                break;
             }
         }
 
-        switch (dataType) {
-            case "long" -> InputAnalyzer.readLongInput(scanner);
-            case "word" -> InputAnalyzer.readStringInput(scanner, "word");
-            case "line" -> InputAnalyzer.readStringInput(scanner, "line");
-            default -> {
-                System.out.println("Invalid datatype provided, defaulting to \"word\" datatype.");
+        //read input and add to appropriate array
+        if (sortIntegers || dataType == DataType.LONG) {
+            while (scanner.hasNext()) {
+                longInput.add(scanner.nextLong());
+            }
+        } else if (dataType == DataType.LINE) {
+            while (scanner.hasNext()) {
+                stringInput.add(scanner.nextLine());
+            }
+        }   else if (dataType == DataType.WORD) {
+            while (scanner.hasNext()) {
+                stringInput.add(scanner.next());
+            }
+        }
+
+        if (sortIntegers) {
+            InputAnalyzer.sortIntegers(longInput);
+        } else {
+            switch (dataType) {
+                case WORD, LINE -> InputAnalyzer.analyzeStringInput(stringInput, dataType);
+                case LONG -> InputAnalyzer.analyzeLongInput(longInput);
             }
         }
     }
